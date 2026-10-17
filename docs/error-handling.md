@@ -9,6 +9,7 @@ Order Service exposes `code`, `message`, `detailedMessage`, optional `downstream
 | ORDR-003 | Product Service unreachable, timed out, throttled, or temporarily unavailable | 503 |
 | ORDR-004 | Unexpected or invalid Product Service response | 502 |
 | ORDR-005 | Unexpected application failure | 500 |
+| ORDR-006 | Order not found | 404 |
 
 Spring MVC failures retain their framework HTTP status and headers (such as 405 and Allow), using ORDR-001 for framework client errors. They do not all become 400.
 
@@ -38,7 +39,7 @@ Order's corresponding response:
 }
 ```
 
-Unexpected failures return a generic detail. Server failures are logged with their cause and correlation identifier in the handler. There are no automatic retries. OrderController and end-to-end order HTTP verification remain pending.
+Unexpected failures return a generic detail. Server failures are logged with their cause and correlation identifier in the handler. There are no automatic retries. OrderController supports POST /orders and GET /orders/{orderId}. End-to-end HTTP verification remains pending.
 
 ## Manual checks after creating OrderController
 

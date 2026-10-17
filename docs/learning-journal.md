@@ -91,3 +91,11 @@ Revision prompt:
 **Revision question:** Why must a downstream 401 not automatically become a 401 for the customer?
 
 **Vishal's answer:** Pending.
+
+## 2026-10-17 — In-memory order retrieval
+
+**Implemented:** ConcurrentHashMap stores completed orders after all product calls succeed. GET /orders/{orderId} returns the captured order or ORDR-006 with HTTP 404. Retrieval does not call Product Service or recalculate prices.
+
+**Limits:** Data disappears on restart and is not shared across replicas. ConcurrentHashMap makes individual map operations thread-safe; it does not make multi-step workflows transactional.
+
+**Verification:** Compilation checked without automated tests; manual HTTP checks remain pending.

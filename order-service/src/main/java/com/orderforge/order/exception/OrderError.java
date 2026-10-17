@@ -7,7 +7,8 @@ public enum OrderError {
     PRODUCT_NOT_FOUND("ORDR-002", "A requested product was not found.", HttpStatus.UNPROCESSABLE_ENTITY),
     PRODUCT_UNAVAILABLE("ORDR-003", "Unable to retrieve product information.", HttpStatus.SERVICE_UNAVAILABLE),
     INVALID_PRODUCT_RESPONSE("ORDR-004", "Product Service returned an invalid response.", HttpStatus.BAD_GATEWAY),
-    INTERNAL_ERROR("ORDR-005", "An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
+    INTERNAL_ERROR("ORDR-005", "An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR),
+    ORDER_NOT_FOUND("ORDR-006", "Order not found.", HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;

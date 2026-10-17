@@ -4,16 +4,19 @@ import com.orderforge.order.client.ProductClient;
 import com.orderforge.order.dto.OrderLineRequest;
 import com.orderforge.order.dto.PlaceOrderRequest;
 import com.orderforge.order.dto.ProductResponse;
+import com.orderforge.order.exception.InvalidOrderException;
+import com.orderforge.order.exception.OrderNotFoundException;
 import com.orderforge.order.model.Order;
 import com.orderforge.order.model.OrderLineItem;
 import io.micrometer.common.util.StringUtils;
-import com.orderforge.order.exception.InvalidOrderException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,33 +24,34 @@ import java.util.UUID;
 public class OrderService {
 
     private final ProductClient productClient;
+    private final Map<String, Order> orders = new ConcurrentHashMap<>();
 
     public OrderService(ProductClient productClient) {
         this.productClient = productClient;
     }
 
     private void validatePlaceOrderRequest(PlaceOrderRequest placeOrderRequest) {
-        if(placeOrderRequest == null){
+        if (placeOrderRequest == null) {
             throw new InvalidOrderException("null placeOrderRequest");
         }
-        if(StringUtils.isBlank(placeOrderRequest.getUserId())){
+        if (StringUtils.isBlank(placeOrderRequest.getUserId())) {
             throw new InvalidOrderException("empty userId");
         }
 
-        if(CollectionUtils.isEmpty(placeOrderRequest.getOrderLines())){
+        if (CollectionUtils.isEmpty(placeOrderRequest.getOrderLines())) {
             throw new InvalidOrderException("empty orderLines");
         }
 
-        for(OrderLineRequest orderLineRequest: placeOrderRequest.getOrderLines()){
-            if (orderLineRequest == null){
+        for (OrderLineRequest orderLineRequest : placeOrderRequest.getOrderLines()) {
+            if (orderLineRequest == null) {
                 throw new InvalidOrderException("empty orderLineRequest");
             }
 
-            if(StringUtils.isBlank(orderLineRequest.getProductId())){
+            if (StringUtils.isBlank(orderLineRequest.getProductId())) {
                 throw new InvalidOrderException("empty productId");
             }
 
-            if(orderLineRequest.getQuantity()== null || orderLineRequest.getQuantity() <= 0){
+            if (orderLineRequest.getQuantity() == null || orderLineRequest.getQuantity() <= 0) {
                 throw new InvalidOrderException("Invalid quantity");
             }
         }
@@ -55,8 +59,18 @@ public class OrderService {
 
     }
 
-    public Order placeOrder(PlaceOrderRequest placeOrderRequest) {
+    public Order getOrderById(String orderId) {
+        if (StringUtils.isBlank(orderId)) {
+            throw new InvalidOrderException("Order ID must not be blank.");
+        }
+        Order order = orders.get(orderId);
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
+        return order;
+    }
 
+    public Order placeOrder(PlaceOrderRequest placeOrderRequest) {
         //validate request
         validatePlaceOrderRequest(placeOrderRequest);
 
@@ -80,7 +94,7 @@ public class OrderService {
             orderLineItemList.add(orderLineItem);
         }
         Instant now = Instant.now();
-        return Order.builder()
+        Order order = Order.builder()
                 .id(UUID.randomUUID().toString())
                 .userId(placeOrderRequest.getUserId())
                 .orderLineItems(List.copyOf(orderLineItemList))
@@ -88,6 +102,7 @@ public class OrderService {
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
-
+        orders.put(order.getId(), order);
+        return order;
     }
 }
