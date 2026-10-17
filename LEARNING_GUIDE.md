@@ -18,6 +18,8 @@ Success means being able to explain the design choices, demonstrate working beha
 
 ## Build and learn loop
 
+Keep questions, answers, and decisions in the [learning journal](docs/learning-journal.md). Ask a small number of questions that affect the current design, invite Vishal's reasoning, then record the reviewed explanation. The immediate priority is the basic deployment with manual verification; automated test work is deferred per Vishal's preference. Production enhancements follow the initial deployment.
+
 1. **Design:** Vishal proposes a model or approach and states assumptions.
 2. **Discuss:** inspect edge cases and alternatives; choose the smallest useful implementation.
 3. **Build:** Vishal writes the code.

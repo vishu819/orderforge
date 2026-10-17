@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.net.http.HttpResponse;
+import com.orderforge.product.exception.ProductNotFoundException;
 import java.util.Optional;
 
 
@@ -23,6 +23,6 @@ public class ProductController {
     @GetMapping("/{productId}") ///products/
     ResponseEntity<Product> getProductById(@PathVariable String productId){
         Optional<Product> product = productService.getProductById(productId);
-        return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(product.orElseThrow(ProductNotFoundException::new));
     }
 }
