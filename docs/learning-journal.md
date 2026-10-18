@@ -99,3 +99,13 @@ Revision prompt:
 **Limits:** Data disappears on restart and is not shared across replicas. ConcurrentHashMap makes individual map operations thread-safe; it does not make multi-step workflows transactional.
 
 **Verification:** Compilation checked without automated tests; manual HTTP checks remain pending.
+
+## 2026-10-18 — Non-root Docker runtime
+
+**Implemented:** Both runtime stages create appuser/appgroup with UID/GID 10001 and use USER 10001:10001. The JAR remains root-owned and readable, so the application user cannot overwrite it under normal permissions. Build stages still perform compilation separately.
+
+**Verified:** Both Compose images rebuilt and containers recreated successfully. Running id in each returned UID/GID 10001. Product's JAR ownership is root:root with permissions 644. Both containers are running; order creation was not rechecked in this step. Recreating Order Service reset its in-memory orders. No automated tests run.
+
+**Revision question:** Why keep the JAR root-owned while running Java as a non-root user?
+
+**Vishal's answer:** Pending.
