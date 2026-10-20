@@ -109,3 +109,19 @@ Revision prompt:
 **Revision question:** Why keep the JAR root-owned while running Java as a non-root user?
 
 **Vishal's answer:** Pending.
+
+## 2026-10-20 — Compose startup readiness
+
+**Implemented:** Product image explicitly installs curl. Compose probes /actuator/health/readiness inside Product every 10 seconds, with a 3-second Docker timeout, a 2-second curl limit, a 30-second startup grace period, and 3 retries. Order depends on Product being service_healthy. Early successful checks can mark Product healthy before the grace period ends.
+
+**Verification:** Compose configuration validates. Runtime/image verification is pending because the Docker daemon was unavailable; automatic launch could not find the application named Docker.
+
+**Limit:** The dependency condition gates startup, not future requests. Unhealthy status alone does not restart a container. Existing service-call timeouts and exceptions remain necessary.
+
+**Revision question:** How do running, healthy, and ready differ?
+
+**Vishal's answer:** Pending.
+
+### Readiness verification update
+
+Docker is now available. `docker compose up -d --build --wait --wait-timeout 90` succeeded and reported Product healthy. The existing containers were already running, so this check verifies configured health, not a fresh startup-order experiment. Order has no explicit health check; its running status is not proof of HTTP readiness. No automated tests run.

@@ -13,6 +13,10 @@ RUN ./mvnw -B package -Dmaven.test.skip=true
 
 FROM eclipse-temurin:21-jre
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd --gid 10001 appgroup \
     && useradd --uid 10001 --gid appgroup \
        --no-create-home appuser

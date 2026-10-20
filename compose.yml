@@ -4,6 +4,12 @@ services:
     build: ./product-service
     ports:
       - "18081:8081"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--max-time", "2", "http://localhost:8081/actuator/health/readiness"]
+      interval: 10s
+      timeout: 3s
+      start_period: 30s
+      retries: 3
 
   order-service:
     build: ./order-service
@@ -12,4 +18,5 @@ services:
     environment:
       PRODUCT_SERVICE_BASE_URL: http://product-service:8081
     depends_on:
-      - product-service
+      product-service:
+        condition: service_healthy
