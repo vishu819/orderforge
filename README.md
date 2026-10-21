@@ -71,3 +71,5 @@ In each service directory run `./mvnw test`.
 5. Cloud deployment and resource cleanup.
 
 Infrastructure files will be added during their learning stages.
+
+For Docker revision, open the [Docker learning guide](docs/docker-learning-guide.html) in a browser. It explains our configuration, troubleshooting, production gaps, and self-check questions.

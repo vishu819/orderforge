@@ -125,3 +125,11 @@ Revision prompt:
 ### Readiness verification update
 
 Docker is now available. `docker compose up -d --build --wait --wait-timeout 90` succeeded and reported Product healthy. The existing containers were already running, so this check verifies configured health, not a fresh startup-order experiment. Order has no explicit health check; its running status is not proof of HTTP readiness. No automated tests run.
+
+## 2026-10-21 — Docker consolidation before Kubernetes
+
+Created [Docker, understood](docker-learning-guide.html): an offline HTML revision guide using current Dockerfiles/Compose, a network flow diagram, production-readiness gaps, a recall routine, and 14 revealable questions. Includes the distinction between process memory, container files, and volumes, and between health observation and recovery.
+
+**Purpose:** Consolidate concepts before Kubernetes. Questions are for revision; their inclusion is not evidence they have been answered correctly.
+
+**Verification:** Checked saved configuration against guide examples and validated HTML parsing, unique IDs, and internal navigation. No Docker changes or runtime checks were performed while creating the guide.
