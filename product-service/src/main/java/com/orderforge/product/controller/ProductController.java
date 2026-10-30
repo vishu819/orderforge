@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orderforge.product.exception.ProductNotFoundException;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.Optional;
 
 
-@Controller
+@RestController
 @RequestMapping("/products")
 public class ProductController {
 
