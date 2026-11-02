@@ -44,32 +44,55 @@ Health checks:
 
 Each should return a status of `UP` once its service starts.
 
-## Structure
+## Current application
 
-Each service has empty `controller`, `service`, `model`, and `dto` packages for your application code. Only the Spring Boot entry points, configuration, and generated context tests are provided.
+- Product Service: `GET /products/{id}` returns catalog data.
+- Order Service: `POST /orders` captures product prices and calculates totals; `GET /orders/{orderId}` retrieves saved snapshots.
+- Orders are stored only in JVM memory. Restarting or replacing Order loses them; replicas do not share data.
+- Both services have multi-stage Dockerfiles and run as non-root users. Compose supplies networking and Product startup readiness checks.
+- Local Kubernetes manifests provide Deployments, ClusterIP Services, and readiness probes. Vishal confirmed order creation and retrieval through Kubernetes.
 
-The original IntelliJ `src/Main.java` is preserved but is outside the Maven modules. It is not used by either service.
+The original IntelliJ `src/Main.java` is outside the Maven modules and is not used by either service.
 
-## First coding task
+## Docker Compose
 
-Before coding, complete the short domain modeling exercise in the learning guide and review the proposal together.
+From this repository root, with Docker Desktop running:
 
-Implement `GET /products/{id}` in product-service. Define a product with id, name, and price. Return a seeded product from in-memory data and return HTTP 404 when the ID is unknown. Keep the lookup logic in the service package and the endpoint in the controller package.
+```bash
+docker compose up -d --build
+docker compose ps
+```
 
-Then implement `POST /orders` in order-service, calling product-service to retrieve the product and calculate the order total.
+Product is published on localhost:18081; Order on localhost:18082. Docker builds Java inside the build stages. Current image builds skip tests as part of the agreed basic learning workflow.
 
-## Verify
+```bash
+docker compose logs -f order-service
+docker compose down
+```
 
-In each service directory run `./mvnw test`.
+Stopping/removing the Order container loses its in-memory orders.
+
+## Local Kubernetes
+
+Read [Kubernetes setup and learning notes](docs/kubernetes-notes.md) before applying manifests. This setup uses Docker Desktop's kind cluster, locally loaded ARM64 images, and `imagePullPolicy: Never`; it is not a cloud deployment configuration.
+
+Product is reached through port-forward 28081, and Order through 28082. These port-forwards must remain running.
+
+## Learning and revision
+
+- [Learning guide and current exercise](LEARNING_GUIDE.md)
+- [Design notes](docs/design-notes.md)
+- [Questions, answers, and learning journal](docs/learning-journal.md)
+- [Docker learning guide](docs/docker-learning-guide.html) — open in a browser
+- [Kubernetes notes](docs/kubernetes-notes.md)
+- [Error response contract](docs/error-handling.md)
 
 ## Next milestones
 
-1. Product endpoint and order endpoint with an HTTP call between services.
-2. Dockerfiles and Docker Compose.
-3. Kubernetes Deployments and Services.
-4. Jenkins build and deployment pipeline.
-5. Cloud deployment and resource cleanup.
+1. Startup and liveness probes, resource settings, and further Kubernetes learning.
+2. Revisit the deferred troubleshooting exercise.
+3. Registry delivery and Jenkins pipeline.
+4. Cloud deployment and resource cleanup.
+5. Progressively define and implement production requirements.
 
-Infrastructure files will be added during their learning stages.
-
-For Docker revision, open the [Docker learning guide](docs/docker-learning-guide.html) in a browser. It explains our configuration, troubleshooting, production gaps, and self-check questions.
+Automated tests are currently deferred by agreement; manual verification is the active learning workflow. This project is not production ready.

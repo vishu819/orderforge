@@ -133,3 +133,19 @@ Created [Docker, understood](docker-learning-guide.html): an offline HTML revisi
 **Purpose:** Consolidate concepts before Kubernetes. Questions are for revision; their inclusion is not evidence they have been answered correctly.
 
 **Verification:** Checked saved configuration against guide examples and validated HTML parsing, unique IDs, and internal navigation. No Docker changes or runtime checks were performed while creating the guide.
+
+## 2026-11-02 — First Kubernetes application flow
+
+**Implemented in saved manifests:** Product and Order Deployments (one replica each), matching ClusterIP Services, readiness probes, and Order's Product URL. Local v1 images loaded into kind cluster desktop.
+
+**User-reported verification:** Product returned Keyboard via port-forward; Product's readiness rollout produced a new Ready Pod; creating and retrieving an order worked via Order's port-forward. Old Pod's transient termination Error was not diagnosed. Deliberate Pod deletion/replacement remains unconfirmed.
+
+**Vishal's answer (paraphrased):** Deleting a Deployment-managed Pod should cause a replacement to be created.
+
+**Reviewed explanation:** The ReplicaSet reconciles the actual Pod count with the Deployment's desired replicas. Replacement does not recover process memory.
+
+**Issues encountered:** Local image unavailable in the node (ErrImageNeverPull), kind CLI/cluster discovery, and a laptop port already occupied by an older port-forward. Resolved during the guided setup.
+
+**Next question (answer pending):** Product is unavailable but Order can return saved orders. Should Order's liveness fail, and why? Startup/liveness probe implementation is next.
+
+See [Kubernetes notes](kubernetes-notes.md). Docker troubleshooting is deferred by request. Documentation update checked against saved files; no fresh cluster actions or automated tests performed.

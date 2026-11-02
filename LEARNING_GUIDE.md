@@ -45,21 +45,15 @@ Keep authentication, payments, messaging, service discovery servers, and a front
 | 7. Jenkins | Test, package, image build, deployment configuration | A pipeline run builds the services and images; deployment is demonstrated against the configured environment |
 | 8. Cloud | Registry, deployment, access, logs, cost and cleanup | Services run in the selected cloud; deployment and cleanup steps are documented |
 
-## Current exercise: design before coding
+## Current progress and exercise
 
-The earlier Product endpoint task remains the first coding exercise. First, propose the domain model in `docs/design-notes.md` using words, a table, or a simple diagram.
+Both services have been implemented and run through Docker Compose and local Kubernetes. Saved manifests include one Deployment and one ClusterIP Service per application, with readiness probes. Vishal confirmed successful order creation and retrieval through Kubernetes. This records user-reported verification, not a fresh automated check.
 
-Answer these questions in your own way; there is no supplied reference implementation to copy:
+See [Kubernetes notes](docs/kubernetes-notes.md) for setup, commands, observed behavior, and limitations.
 
-1. What fields and types do Product, Order, and OrderItem need? Which fields are required?
-2. Can an order contain several products? How do you represent the relationship and quantities?
-3. How will you represent money and currency? Which values must be positive?
-4. If a product's price changes tomorrow, what should yesterday's order show?
-5. Which service owns each piece of data? What information crosses the HTTP boundary?
-6. If these models were stored in relational tables, what would the primary keys, foreign keys, and useful constraints be? Distinguish references within one service from IDs held across service boundaries.
-7. What happens if a product is missing or Product is unavailable when creating an order?
+**Next:** discuss startup versus readiness versus liveness, then add startup and liveness probes. Pending question: Product is unavailable, but Order can return existing orders; should Order's liveness fail, and why?
 
-Keep this proposal short: roughly 15–30 minutes. The assistant will review it, discuss tradeoffs, and then define the next coding task with Vishal.
+**Deferred:** the Docker broken-URL troubleshooting exercise, at Vishal's request. Jenkins, registry delivery, and cloud deployment remain planned. Automated tests remain deferred. The original weekend target is now a learning scope rather than a completed schedule.
 
 ## Review lens
 
